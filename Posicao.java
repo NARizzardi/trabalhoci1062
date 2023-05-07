@@ -2,6 +2,9 @@ public class Posicao {
     private int posX;
     private int posY;
     
+    public Posicao() {
+    }
+
     public Posicao(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
