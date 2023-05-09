@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Jogador extends Entidade{
     private String nome;
     private Item item;
@@ -57,7 +59,25 @@ public class Jogador extends Entidade{
         }
         return null;
     }
-
+    /*
+    *   Tenta Movimentar o jogador em uma direção aleatoria
+    *   Retorna a posição que o jogador está tentando se mover
+    */
+    public Posicao movimentoAleatorio(){
+        Random rand = new Random();
+        Posicao p = this.getPosicao();
+        switch (rand.nextInt(4)){
+            case 0:
+                return new Posicao(p.getPosX()+1, p.getPosY());
+            case 1:
+                return new Posicao(p.getPosX()-1, p.getPosY());
+            case 2:
+                return new Posicao(p.getPosX(), p.getPosY()+1);
+            case 3:
+                return new Posicao(p.getPosX(), p.getPosY()-1);
+        }
+        return null;
+    }
 
     /* 
     *   Função para usar o item do personagem, depois de uso jogador perde o item 
