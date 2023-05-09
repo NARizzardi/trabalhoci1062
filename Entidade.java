@@ -1,8 +1,8 @@
 public abstract class Entidade {
     protected Posicao posicao;
 
-    public Entidade() {
-        
+    public Entidade(Posicao posicao) {
+        this.setPosicao(posicao);
     }
 
     public Posicao getPosicao() {
