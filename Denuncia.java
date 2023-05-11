@@ -33,11 +33,11 @@ public class Denuncia extends Item{
         ArrayList<FakeNews> fakenews = tabuleiro.getFakeNews();
         Posicao posicaoJogador = jogador.getPosicao();
 
-        for(int i = 0; i < fakenews.size(); i++){
-            if(adjacente(posicaoJogador, fakenews.get(i).getPosicao()))
-               tabuleiro.apagaEntidade(fakenews.get(i).getPosicao());
-            
+        for (FakeNews fakeNews : fakenews) {
+            if(adjacente(posicaoJogador, fakeNews.getPosicao()))
+               tabuleiro.apagaEntidade(fakeNews.getPosicao());
         }
+
         return 0;
     }
         
