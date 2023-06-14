@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Tabuleiro {
     
-    private ArrayList<ArrayList<Entidade>> entidades;
+    private ArrayList<ArrayList<Entidade>> entidades; //tabuleiro propriamente dito
     private ArrayList<FakeNews> fakeNews;
     private ArrayList<Jogador> jogadores;
     
@@ -30,21 +30,39 @@ public class Tabuleiro {
     }
 
     //done
-    public void iniciaJogo(ArrayList<Jogador> jogadores){
+    public void iniciaJogo(ArrayList<Jogador> jogadores) throws InterruptedException{
         
         this.criaMapa();
-        
-        this.posicionaJogadores(jogadores);
-        
-        this.inicializaFakeNews();
+        System.out.println("\n\nGerando tabuleiro...");
+        Thread.sleep(3000);
+        this.imprimeTabuleiro();
 
+        this.posicionaJogadores(jogadores);
+        System.out.println("\n\nAdicionando jogadores...");
+        Thread.sleep(3000);
+        this.imprimeTabuleiro();
+
+       
+        
         for(int i = 0; i < 4; i++){
             this.inicializaAreaRestrita();
         }
+        System.out.println("\n\nAdicionando áreas restritas...");
+        Thread.sleep(3000);
+        this.imprimeTabuleiro();
 
         for(int i = 0; i < 2; i++){
             this.geraItens();
+            System.out.println("\n\nAdicionando os itens");
+            Thread.sleep(30);
+            this.imprimeTabuleiro();
+            System.out.println("\n\n");
         }
+
+        this.inicializaFakeNews();
+        System.out.println("\n\nAdicionando Fakenews...");
+        Thread.sleep(3000);
+        this.imprimeTabuleiro();
         
     }
 
@@ -57,21 +75,30 @@ public class Tabuleiro {
         //insert code here
     }
 
-    public void geraFakeNews(int tipo, boolean duplicada, Posicao posAtual){
+    //done
+    public FakeNews geraFakeNews(int tipo, boolean duplicada, Posicao posAtual){
         Posicao pos = new Posicao();
         if(!duplicada)
-            pos = geraPosicao();
+            pos = geraPosicao(7,1);
         else{
             int posX = posAtual.getPosX();
             int posY = posAtual.getPosY();
             Random aleatorio = Aleatorio.getAleatorio();
-
+            int newPos = 0;
             do{
                 int x = (aleatorio.nextInt(4) % 3) - 1;
                 int y = (aleatorio.nextInt(4) % 3) - 1;
                 pos.setPosX(posX + x);
                 pos.setPosY(posY + y);
-            }while(checaPosicao(pos) != 0);
+                newPos = checaPosicao(pos);
+            }while(((newPos % 2 )!= 0) == true);
+
+            if(newPos == 2){  //nova fakeNews gerada em um jogador
+                apagaEntidade(pos);
+            } else if(newPos == 4){ //nova fakeNews gerada em um novoItem;
+                geraFakeNews(tipo, true, pos); //gera uma nova fakeNews
+                geraItens(); //repõe o item perdido
+            }
 
         }
         FakeNews fake;
@@ -86,27 +113,29 @@ public class Tabuleiro {
                 fake = new F3(pos);
                 break;
             default:
-                return;
+                return null;
         }
         this.adicionaNoTabuleiro(fake);
+        return fake;
     }
 
     public void geraItens(){
-        Posicao pos = geraPosicao();
+        Posicao pos = this.geraPosicao(9,0);
         Random aleatorio = Aleatorio.getAleatorio();
         int tipo = (aleatorio.nextInt(5) % 4);
+        System.out.println(tipo);
         Item item;
         switch(tipo){
-            case 1:
+            case 0:
                 item = new Boato(pos);
                 break;
-            case 2:
+            case 1:
                 item = new Denuncia(pos);
                 break;
-            case 3:
+            case 2:
                 item = new Fuga(pos);
                 break;
-            case 4:
+            case 3:
                 item = new Noticia(pos);
                 break;
             default:
@@ -118,7 +147,6 @@ public class Tabuleiro {
 
     //done
     public void apagaEntidade(Posicao posicao){
-        //insert code here
         int x = posicao.getPosX();
         int y = posicao.getPosY();
 
@@ -272,20 +300,23 @@ public class Tabuleiro {
     
     //done
     private void inicializaFakeNews(){
-        this.geraFakeNews(1, false, null);
-        this.geraFakeNews(1, false, null);
+        ArrayList<FakeNews> fakeNews = new ArrayList<FakeNews>(6);
+        
+        fakeNews.add(this.geraFakeNews(1, false, null));
+        fakeNews.add(this.geraFakeNews(1, false, null));
 
-        this.geraFakeNews(2, false, null);
-        this.geraFakeNews(2, false, null);
+        fakeNews.add(this.geraFakeNews(2, false, null));
+        fakeNews.add(this.geraFakeNews(2, false, null));
 
-        this.geraFakeNews(3, false, null);
-        this.geraFakeNews(3, false, null);
+        fakeNews.add(this.geraFakeNews(3, false, null));
+        fakeNews.add(this.geraFakeNews(3, false, null));
+        this.setFakeNews(fakeNews);
     }
 
     //done
     private void inicializaAreaRestrita(){
 
-        Posicao pos = geraPosicao();
+        Posicao pos = geraPosicao(9,0);
         AreaProibida ap = new AreaProibida(pos);
 
         this.adicionaNoTabuleiro(ap);
@@ -293,6 +324,9 @@ public class Tabuleiro {
 
     //done
     private int checaPosicao(Posicao posicao){
+        if(posicao.getPosX() > 8 || posicao.getPosY()>8)
+            return -1;
+        
         ArrayList<Entidade> row = this.entidades.get(posicao.getPosY());
         int ocupacao = this.getEntidadeTipo(row.get(posicao.getPosX()));
         return ocupacao;
@@ -305,14 +339,14 @@ public class Tabuleiro {
     }
 
     //done
-    private Posicao geraPosicao(){
+    private Posicao geraPosicao(int limit, int offset){
         Random aleatorio = Aleatorio.getAleatorio();
         int pX;
         int pY;
         Posicao pos = new Posicao();
         do{
-            pX = aleatorio.nextInt(7) + 1;        
-            pY = aleatorio.nextInt(7) + 1;        
+            pX = aleatorio.nextInt(limit) + offset;        
+            pY = aleatorio.nextInt(limit) + offset;        
             pos.setPosX(pX);
             pos.setPosY(pY);
         } while(this.checaPosicao(pos) != 0);

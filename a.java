@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class a{
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Aleatorio a = new Aleatorio();
         a.setAleatorio();
         Tabuleiro t = new Tabuleiro();
