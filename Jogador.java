@@ -21,6 +21,10 @@ public class Jogador extends Entidade{
         this.item = item;
     }
 
+    public void setItem(Item item){
+        this.item = item;
+    }
+
     public boolean isBoatoFlag(){
         return this.boato_flag;
     }
@@ -69,8 +73,7 @@ public class Jogador extends Entidade{
     *   Retorna a posição que o jogador está tentando se mover
     */
     public Posicao movimentoAleatorio(){
-        Random rand = new Random();
-        Posicao p = this.getPosicao();
+        Aleatorio rand = Aleatorio.getAleatorio();
         switch (rand.nextInt(4)){
             case 0:
                 return new Posicao(p.getPosX()+1, p.getPosY());
@@ -87,9 +90,9 @@ public class Jogador extends Entidade{
     /* 
     *   Função para usar o item do personagem, depois de uso jogador perde o item 
     */
-    public void utilizarItem(/* Recebe o necessario para a função de usar item */){
+    public void utilizarItem){
         if(this.item != null){
-            /* Chama a função de usar o item */
+            /* Função para usar o item */
             this.item = null;
         }
     }
