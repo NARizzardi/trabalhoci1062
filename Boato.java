@@ -8,6 +8,6 @@ public class Boato extends Item{
     }
 
     public void realizaAcao(Jogador jogador){
-        jogador.boato_flag = true;
+        jogador.setBoatoFlag(true);
     }
 }

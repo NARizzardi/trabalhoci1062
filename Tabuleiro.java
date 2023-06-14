@@ -36,14 +36,14 @@ public class Tabuleiro {
         
         this.posicionaJogadores(jogadores);
         
-        // this.inicializaFakeNews();
+        this.inicializaFakeNews();
 
         for(int i = 0; i < 4; i++){
             this.inicializaAreaRestrita();
         }
 
         for(int i = 0; i < 2; i++){
-         //   this.geraItens();
+            this.geraItens();
         }
         
     }
@@ -57,12 +57,63 @@ public class Tabuleiro {
         //insert code here
     }
 
-    public void geraFakeNews(int tipo, boolean duplicada){
-        //insert code here
+    public void geraFakeNews(int tipo, boolean duplicada, Posicao posAtual){
+        Posicao pos = new Posicao();
+        if(!duplicada)
+            pos = geraPosicao();
+        else{
+            int posX = posAtual.getPosX();
+            int posY = posAtual.getPosY();
+            Random aleatorio = Aleatorio.getAleatorio();
+
+            do{
+                int x = (aleatorio.nextInt(4) % 3) - 1;
+                int y = (aleatorio.nextInt(4) % 3) - 1;
+                pos.setPosX(posX + x);
+                pos.setPosY(posY + y);
+            }while(checaPosicao(pos) != 0);
+
+        }
+        FakeNews fake;
+        switch (tipo) {
+            case 1:
+                fake = new F1(pos);
+                break;
+            case 2:
+                fake = new F2(pos);
+                break;
+            case 3:
+                fake = new F3(pos);
+                break;
+            default:
+                return;
+        }
+        this.adicionaNoTabuleiro(fake);
     }
 
     public void geraItens(){
-        //insert code here
+        Posicao pos = geraPosicao();
+        Random aleatorio = Aleatorio.getAleatorio();
+        int tipo = (aleatorio.nextInt(5) % 4);
+        Item item;
+        switch(tipo){
+            case 1:
+                item = new Boato(pos);
+                break;
+            case 2:
+                item = new Denuncia(pos);
+                break;
+            case 3:
+                item = new Fuga(pos);
+                break;
+            case 4:
+                item = new Noticia(pos);
+                break;
+            default:
+                return;
+        }
+
+        this.adicionaNoTabuleiro(item);
     }
 
     //done
@@ -221,18 +272,40 @@ public class Tabuleiro {
     
     //done
     private void inicializaFakeNews(){
-        this.geraFakeNews(1, false);
-        this.geraFakeNews(1, false);
+        this.geraFakeNews(1, false, null);
+        this.geraFakeNews(1, false, null);
 
-        this.geraFakeNews(2, false);
-        this.geraFakeNews(2, false);
+        this.geraFakeNews(2, false, null);
+        this.geraFakeNews(2, false, null);
 
-        this.geraFakeNews(3, false);
-        this.geraFakeNews(3, false);
+        this.geraFakeNews(3, false, null);
+        this.geraFakeNews(3, false, null);
     }
 
     //done
     private void inicializaAreaRestrita(){
+
+        Posicao pos = geraPosicao();
+        AreaProibida ap = new AreaProibida(pos);
+
+        this.adicionaNoTabuleiro(ap);
+    }
+
+    //done
+    private int checaPosicao(Posicao posicao){
+        ArrayList<Entidade> row = this.entidades.get(posicao.getPosY());
+        int ocupacao = this.getEntidadeTipo(row.get(posicao.getPosX()));
+        return ocupacao;
+    }
+
+    //
+    private void adicionaNoTabuleiro(Entidade e){
+        ArrayList<Entidade> row = this.entidades.get(e.getPosicao().getPosY());
+        row.set(e.getPosicao().getPosX(), e);
+    }
+
+    //done
+    private Posicao geraPosicao(){
         Random aleatorio = Aleatorio.getAleatorio();
         int pX;
         int pY;
@@ -243,19 +316,7 @@ public class Tabuleiro {
             pos.setPosX(pX);
             pos.setPosY(pY);
         } while(this.checaPosicao(pos) != 0);
-
-        AreaProibida ap = new AreaProibida();
-        ap.setPosicao(pos);
-
-        ArrayList<Entidade> row = this.entidades.get(pY);
-        row.set(pX, ap);
-    }
-
-    //done
-    private int checaPosicao(Posicao posicao){
-        ArrayList<Entidade> row = this.entidades.get(posicao.getPosY());
-        int ocupacao = this.getEntidadeTipo(row.get(posicao.getPosX()));
-        return ocupacao;
+        return pos;
     }
 
     private void imprimeEntidade(String cor, String tipoEntidade){

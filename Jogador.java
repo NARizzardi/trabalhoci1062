@@ -5,11 +5,16 @@ public class Jogador extends Entidade{
     private Item item;
     private boolean boato_flag;
 
-    public Jogador(String nome,Posicao posicao) {
+    
+    public Jogador(String nome, Posicao posicao) {
         super(posicao);
         this.setNome(nome);
-        this.boato_flag = false;
-        this.item = null;
+        this.setBoatoFlag(false);
+        this.setItem(null);
+    }
+
+    public Jogador(String nome){
+        this(nome, null);
     }
 
     public void setItem(Item item){
