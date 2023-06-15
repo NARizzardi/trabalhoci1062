@@ -2,66 +2,83 @@ import java.util.*;
 
 public class Main{
     public static void main(String[] args) {
-        Aleatorio a = new Aleatorio();
-        a.setAleatorio();
+        //==========================================
+        // Iniciando Variaveis
+        //==========================================
+        Aleatorio ale = new Aleatorio();
+        ale.setAleatorio();
 
-        // =========================================
-        // Iniciando
-        // =========================================
-
-        /* Entrada */
+        /* Input numero de Jogadores */
         int num_jogadores = 4;
 
-        Posicao temp = new Posicao(); 
+        /* Jogadores */
         ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
         for(int i = 0; i < num_jogadores; i++){
             /* Get nome do jogador*/
             jogadores.add(new Jogador("Nome", null));
         }
 
+        /* Tabuleiro */
         Tabuleiro tabuleiro = new Tabuleiro();
         tabuleiro.iniciaJogo(jogadores);
 
-        // =========================================
-        // Jogo
-        // =========================================
+        /* Variaveis de logica de jogo */
         Jogador atual;
         Posicao p;
         char input;
         int flag;
-        /* Turno */
-        while(!tabuleiro.fimDeJogo()){
-            
+
+        //==========================================
+        // Jogo
+        //==========================================
+ 
+        for(int turno = 0; (turno < 20) && !tabuleiro.fimDeJogo(); turno++){
+            /* Vez dos jogadores */
             for(int i = 0; i < num_jogadores; i++){
                 atual = tabuleiro.getJogador(i);
 
                 /* Movimento forçado :: Boato */
-                if(atual.isBoatoFlag){
+                if(atual.isBoatoFlag()){
                     /* Mensagem de boato  */
+                    p = atual.movimentoAleatorio();
+                    atual.setBoatoFlag(false);
+                    tabuleiro.resolveMovimento(atual,p);                
                 }
-                /* Faz a Jogada  */
-                /* Menu */
-                /* Processa Input */
-                /* Movimento */
-                if(input != 'i'){
-                    p = atual.movimentoBase(input);
-                    flag = tabuleiro.resolveMovimento(atual,p);
-
-                }    
                 else{
-                    /* Item */
-                    flag = atual.ChecarItem();
-                    /* Noticia e Fuga Precisam de uma posição*/
-                    if(flag == 4 || flag = 2){
-                        /* Pega posição */
+                    /* Processa Input */
+
+                    /* Movimento */
+                    if(input != 'i'){
+                        p = atual.movimentoBase(input);
+                        tabuleiro.resolveMovimento(atual,p);
+
+                    }    
+                    else{
+                        /* Item */
+                        flag = atual.ChecarItem();
+                        /* Noticia e Fuga Precisam de uma posição*/
+                        if(flag == 4 || flag == 2){
+                            /* Pega posição */
+                        }
+                        /* Tem que devolver se o jogador morreu */
+                        atual.utilizarItem(tabuleiro,p);
                     }
-                    atual.utilizarItem(tabuleiro,p);
-                }           
-                if(flag){
-                    /* Mensagem de Morte */
-                } 
+                }
             }
+            /* Vez das fakeNews */
             tabuleiro.turnoFakeNews();
+        }
+
+        //==========================================
+        // Fim de Jogo
+        //==========================================
+        
+        /* Tipos de Fim de Jogo */
+        if(tabuleiro.getFakeNewsQtd() == 0){
+            /* Mensagem de Vitoria */
+        }
+        else{
+            /* Mensagem Derrota    */
         }
     }
 }
