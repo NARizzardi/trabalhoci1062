@@ -1,12 +1,13 @@
 import java.util.*;
 
 public class Main{
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         //==========================================
         // Iniciando Variaveis
         //==========================================
         Aleatorio ale = new Aleatorio();
         ale.setAleatorio();
+        Scanner s = new Scanner(System.in);
 
         /* Input numero de Jogadores */
         int num_jogadores = 4;
@@ -46,7 +47,7 @@ public class Main{
                 }
                 else{
                     /* Processa Input */
-
+                    input = s.next().charAt(0);
                     /* Movimento */
                     if(input != 'i'){
                         p = atual.movimentoBase(input);
