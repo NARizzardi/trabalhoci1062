@@ -4,10 +4,6 @@ public class Denuncia extends Item{
     public Denuncia(Posicao posicao){
         super(posicao);
     }
-    
-    public int realizaAcao(){
-        return 0;
-    }
 
     public boolean adjacente(Posicao jogador, Posicao fakenews){
     
@@ -28,7 +24,7 @@ public class Denuncia extends Item{
         return false;
     }
 
-    public int realizaAcao(Tabuleiro tabuleiro, Jogador jogador){
+    public int realizaAcao(Tabuleiro tabuleiro,Posicao posicao,Jogador jogador){
 
         ArrayList<FakeNews> fakenews = tabuleiro.getFakeNews();
         Posicao posicaoJogador = jogador.getPosicao();
