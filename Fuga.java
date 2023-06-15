@@ -5,12 +5,9 @@ public class Fuga extends Item{
 
 
     public int realizaAcao(Tabuleiro tabuleiro,Posicao posicao,Jogador jogador){
-        
-        if((posicao.getPosX() > 0 && posicao.getPosX() < 10) && (posicao.getPosY() > 0 && posicao.getPosY() < 10)){
-            jogador.posicao = posicao;
-            return 1;
-        }
-
-        return 0;
+        jogador.setPosicao(posicao);
+        return 1;
     }
+        
+
 }
