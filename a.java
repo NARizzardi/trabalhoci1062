@@ -10,7 +10,5 @@ public class a{
         jogadores.add(j1);
         t.iniciaJogo(jogadores);
         t.imprimeTabuleiro();
-        System.err.println("Turno das fakeNews!");
-        t.turnoFakeNews();
     }
 }
