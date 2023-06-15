@@ -5,11 +5,8 @@ public class Noticia extends Item{
         super(posicao);
     }
 
-    public int realizaAcao(){
-        return 0;
-    }
 
-    public void realizaAcao(Tabuleiro tabuleiro, Posicao posicao){
+    public int realizaAcao(Tabuleiro tabuleiro,Posicao posicao,Jogador jogador){
       
         ArrayList<FakeNews> fakenews = tabuleiro.getFakeNews();
         int posX = posicao.getPosX();
@@ -18,9 +15,10 @@ public class Noticia extends Item{
         for(int i = 0; i < fakenews.size(); i++){
             if(fakenews.get(i).getPosicao().getPosX() == posX && fakenews.get(i).getPosicao().getPosY() == posY){
                 tabuleiro.apagaEntidade(fakenews.get(i).getPosicao());  
-                return;
+                return 1;
             }
         }
+        return 0;
 
     }
 }

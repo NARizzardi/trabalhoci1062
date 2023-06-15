@@ -8,6 +8,6 @@ public abstract class  Item extends Entidade{
         super(posicao);
     }
     
-    public abstract int realizaAcao();
+    public abstract int realizaAcao(Tabuleiro tabuleiro,Posicao posicao,Jogador jogador);
 
 }

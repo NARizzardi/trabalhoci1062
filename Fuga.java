@@ -3,10 +3,6 @@ public class Fuga extends Item{
         super(posicao);
     }
 
-    public int realizaAcao(){
-        
-        return 0;
-    }
 
     public int realizaAcao(Tabuleiro tabuleiro,Posicao posicao,Jogador jogador){
         

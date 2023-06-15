@@ -3,11 +3,8 @@ public class Boato extends Item{
         super(posicao);
     }
 
-    public int realizaAcao(){
-        return 0;
-    }
-
-    public void realizaAcao(Jogador jogador){
+    public int realizaAcao(Tabuleiro tabuleiro,Posicao posicao,Jogador jogador){
         jogador.setBoatoFlag(true);
+        return 1;
     }
 }
