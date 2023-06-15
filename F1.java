@@ -7,7 +7,7 @@ public class F1 extends FakeNews{
     }
 
     public Posicao movimentaFakeNews(){
-        Aleatorio rand = Aleatorio.getAleatorio();
+        Random rand = Aleatorio.getAleatorio();
         Posicao p = this.getPosicao();
 
         switch (rand.nextInt(4)){
