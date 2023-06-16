@@ -1,11 +1,14 @@
 import java.util.Random;
 
 public class F1 extends FakeNews{
-    
+
     public F1(Posicao posicao){
         super(posicao);
     }
-
+    
+    /*
+    *   Movimento aleatorio uma casas vertical ou horizontal 
+    */
     public Posicao movimentaFakeNews(){
         Random rand = Aleatorio.getAleatorio();
         Posicao p = this.getPosicao();

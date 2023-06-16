@@ -7,15 +7,17 @@ public class Main{
         //==========================================
         Aleatorio ale = new Aleatorio();
         ale.setAleatorio();
-        Scanner s = new Scanner(System.in);
 
         Scanner scanner = new Scanner(System.in);
 
         /* Jogadores */
         int num_jogadores;
         ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
-        String nome_jogador;
-
+        Posicao iniciais[] = new Posicao[4];
+        iniciais[0] = new Posicao(4, 0); 
+        iniciais[1] = new Posicao(8, 4); 
+        iniciais[2] = new Posicao(4, 8); 
+        iniciais[3] = new Posicao(0, 4);
         /* Tabuleiro */
         Tabuleiro tabuleiro = new Tabuleiro();
 
@@ -44,14 +46,7 @@ public class Main{
         scanner.nextLine();
 
         for(int i = 0; i < num_jogadores; i++){
-            /* Get nome do jogador*/
-            System.out.printf("Nome do jogador %d:\n",i);;
-            nome_jogador = scanner.nextLine();
-            while(nome_jogador.isBlank()){
-                System.out.println("Nome Invalido!");;
-                nome_jogador = scanner.nextLine();
-            }
-            jogadores.add(new Jogador(nome_jogador, null));
+            jogadores.add(new Jogador(Integer.toString(num_jogadores-i), iniciais[i]));
         }
 
         System.out.println("==============================");
@@ -60,6 +55,7 @@ public class Main{
         try {
             tabuleiro.iniciaJogo(jogadores); 
         } catch (Exception e) {
+            scanner.close();
             return;
         }
         //==========================================
@@ -67,7 +63,7 @@ public class Main{
         //==========================================
         for(turno = 0; (turno < 20) && !tabuleiro.fimDeJogo(); turno++){
             /* Vez dos jogadores */
-            for(int i = 0; i < num_jogadores; i++){
+            for(int i = tabuleiro.getJogadoresQtd()-1; i >= 0; i--){
                 /* Gambiarra para limpar tela */
                 System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
                 System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
@@ -78,10 +74,12 @@ public class Main{
                 System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
                 tabuleiro.imprimeTabuleiro();
-                atual = tabuleiro.getJogadores().get(i);
+                atual = tabuleiro.getJogador(i);
+
+                    
                 
                 /* Teste */
-                atual.setItem(new  Denuncia(atual.getPosicao()));
+                atual.setItem(new Denuncia(atual.getPosicao()));
                 /*********/
 
                 /* Movimento forçado :: Boato */
@@ -116,7 +114,7 @@ public class Main{
 
                     /* Movimento */
                     if(!input.equals("ITEM")){
-                        p = atual.movimentoBase(input.charAt(i));
+                        p = atual.movimentoBase(input.charAt(0));
                         tabuleiro.resolveMovimento(atual,p);
                     }    
                     else{
@@ -138,11 +136,14 @@ public class Main{
                                 System.out.println("           Noticia!           ");
                                 System.out.println("==============================");
                                 System.out.println( "Mas é verdade isso?        \n");
-                                System.out.println( "Digite uma casa [x,y] para investigar: \n");
-                                temp = scanner.nextLine();
-                                str  = temp.split(",");
-                                p.setPosX( Integer.parseInt(str[0]) );
-                                p.setPosY( Integer.parseInt(str[1]) );
+                                System.out.println("==============================");
+                                Thread.sleep(2000);
+
+                                //System.out.println( "Digite uma casa [x,y] para investigar: \n");
+                                //temp = scanner.nextLine();
+                                //str  = temp.split(",");
+                                //p.setPosX( Integer.parseInt(str[0]) );
+                                //p.setPosY( Integer.parseInt(str[1]) );
                                 break;
                             /* Boato   */                    
                             case 3:
@@ -174,6 +175,7 @@ public class Main{
             /* Vez das fakeNews */
             tabuleiro.turnoFakeNews();
         }
+        scanner.close();
 
         //==========================================
         // Fim de Jogo
@@ -183,7 +185,7 @@ public class Main{
             System.out.println("                Vitoria!              ");
             System.out.println("======================================");
             System.out.printf( "Jogadores :: %d\n",tabuleiro.getJogadores().size());
-            System.out.printf( "Turnos    :: %i\n",turno);
+            System.out.printf( "Turnos    :: %d\n",turno);
             System.out.println("======================================");
         }
         else{
@@ -195,5 +197,7 @@ public class Main{
             System.out.printf( "Turnos    :: %d\n",turno);
             System.out.println("======================================");
         }
+
     }
+
 }

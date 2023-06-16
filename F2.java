@@ -4,7 +4,10 @@ public class F2 extends FakeNews{
     public F2(Posicao posicao){
         super(posicao);
     }
-
+    
+    /*
+    *   Movimento aleatorio duas casas vertical ou horizontal 
+    */
     public Posicao movimentaFakeNews(){
         Random rand = Aleatorio.getAleatorio();
         Posicao p = this.getPosicao();

@@ -24,6 +24,9 @@ public class Denuncia extends Item{
         return false;
     }
 
+    /*
+    *   Destroi todas as fakenews adjacentes ao jogador 
+    */
     public int realizaAcao(Tabuleiro tabuleiro,Posicao posicao,Jogador jogador){
 
         for (int index = tabuleiro.getFakeNewsQtd()-1; index >= 0; index--) {

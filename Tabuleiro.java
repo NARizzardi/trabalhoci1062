@@ -31,7 +31,6 @@ public class Tabuleiro {
         this.jogadores = jogadores;
     }
 
-
     //done
     public int getJogadorIndex(Jogador jog) {
         for(int i = 0; i < this.jogadores.size(); i++){
@@ -73,42 +72,52 @@ public class Tabuleiro {
         return this.fakeNews.size();
     }
 
-
     //done
     public void iniciaJogo(ArrayList<Jogador> jogadores){
         
+        System.out.println("\n\nGerando tabuleiro...");        
         this.criaMapa();
         
 
-        this.posicionaJogadores(jogadores);
         
 
        
-        
+        System.out.println("Adicionando áreas restritas...");        
         for(int i = 0; i < 4; i++){
             this.inicializaAreaRestrita();
         }
         
 
+        System.out.println("Adicionando os itens");
         for(int i = 0; i < 2; i++){
             this.geraItens();
         }
 
+        System.out.println("Adicionando Fakenews...");
         this.inicializaFakeNews();
         
+        System.out.println("Adicionando jogadores...");
+        this.posicionaJogadores(jogadores);
         
     }
 
     //done
     public void turnoFakeNews() throws InterruptedException{
-        for(FakeNews fake : this.fakeNews){
-            
-            System.out.print("Turno da fakenews " + this.getFakeNewsIndex(fake));
-            Thread.sleep(3000);
-            Posicao pos = fake.movimentaFakeNews();
-            this.resolveMovimento(fake, pos);
+        //for(FakeNews fake : this.fakeNews){
+        for(int index = this.getFakeNewsQtd() -1; index >= 0 ; index--){  
+            /* Gambiarra para limpar tela */
+            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            Posicao pos = this.getOneFakeNews(index).movimentaFakeNews();
+            this.resolveMovimento(this.getOneFakeNews(index), pos);
             this.imprimeTabuleiro();
-            
+            Thread.sleep(2000);
+
         }
     }
 
@@ -189,7 +198,7 @@ public class Tabuleiro {
 
         ArrayList<Entidade> al = this.entidades.get(y);
         Entidade e = al.get(x);
-        al.set(y, null);
+        al.set(x, null);
         if(this.getEntidadeTipo(e) == 1){
             FakeNews f = (FakeNews) e;
             fakeNews.remove(f);
@@ -207,6 +216,7 @@ public class Tabuleiro {
         if(xAxys >= 0 && yAxys >= 0){
             valorPosicao = checaPosicao(newPos);
         }
+        /* Jogador */
         if(this.getEntidadeTipo(e) == 2){
             Jogador j = (Jogador) e;
             String nome = j.getNome();
@@ -239,9 +249,13 @@ public class Tabuleiro {
                 
             }
         } else {
+            /* Faken */
             FakeNews f = (FakeNews) e; 
-            if(valorPosicao == 3 || valorPosicao == 1){
-                this.apagaEntidade(f.getPosicao());
+            if(valorPosicao == 3 || valorPosicao == 1 || valorPosicao == -1){
+                //this.apagaEntidade(f.getPosicao());
+                this.getFakeNews().remove(f);
+                this.removeDoTabuleiro(f.getPosicao());
+
                 System.out.println("A fakenews se eliminou...");
             } else {
 
@@ -313,35 +327,9 @@ public class Tabuleiro {
     //done
     private void posicionaJogadores(ArrayList<Jogador> jogadores) {
         this.setJogadores(jogadores);
-        
-        Posicao p1 = new Posicao(4, 0);
-        ArrayList<Entidade> row = this.entidades.get(p1.getPosY());
-        row.add(p1.getPosX(), jogadores.get(0));
-        jogadores.get(0).setPosicao(p1);
-        
-        if(jogadores.size() == 1)
-            return;
-        
-        Posicao p2 = new Posicao(8, 4);
-        row = this.entidades.get(p2.getPosY());
-        row.add(p2.getPosX(), jogadores.get(1));
-        jogadores.get(1).setPosicao(p2);
-        System.out.println(row.get(8).getClass().getSimpleName());
-        if(jogadores.size() == 2)
-            return;
-
-        Posicao p3 = new Posicao(4, 8);
-        row = this.entidades.get(p3.getPosY());
-        row.add(p3.getPosX(), jogadores.get(2));
-        jogadores.get(2).setPosicao(p3);
-
-        if(jogadores.size() == 3)
-            return;
-
-        Posicao p4 = new Posicao(0, 4);
-        row = this.entidades.get(p4.getPosY());
-        row.add(p4.getPosX(), jogadores.get(3));
-        jogadores.get(3).setPosicao(p4);
+        for (int i = 0; i < jogadores.size(); i++) {
+            this.adicionaNoTabuleiro(jogadores.get(i));
+        }
     }
     
     //done
@@ -442,8 +430,7 @@ public class Tabuleiro {
 
                     else if (tipo == 2){
                         Jogador jog = (Jogador) e; //Downcasting para usar o metodo getNome da classe Jogador
-                        int numJogador = this.getJogadorIndex(jog)+1;
-                        String player = "J".concat(Integer.toString(numJogador)).concat(" ");
+                        String player = "J".concat(jog.getNome()).concat(" ");
                         this.imprimeEntidade(Cores.ANSI_CYAN, player);
                     } 
 
