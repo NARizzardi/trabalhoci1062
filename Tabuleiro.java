@@ -2,36 +2,49 @@ import java.util.*;
 
 public class Tabuleiro {
     
-    private ArrayList<ArrayList<Entidade>> entidades; //tabuleiro propriamente dito
+    private ArrayList<ArrayList<Entidade>> entidades; 
     private ArrayList<FakeNews> fakeNews;
     private ArrayList<Jogador> jogadores;
     
-    //construtor
+    //Construtor
     public Tabuleiro() {}
+    
+    //==========================================
+    //Getters e setters
+    //==========================================
 
-    //getters e setters
     public ArrayList<ArrayList<Entidade>> getEntidades() {
         return entidades;
     }
-    public void setEntidades(ArrayList<ArrayList<Entidade>> entidades) {
+    private void setEntidades(ArrayList<ArrayList<Entidade>> entidades) {
         this.entidades = entidades;
+    }
+    
+    /*
+    *   Pega uma entidade do tabuleiro
+    *   Posicao pos        Posição da entidade
+    *   retorna a entidade da posição, null se ela estiver vazia
+    */
+    private Entidade getEntidade(Posicao pos){
+        ArrayList<Entidade> row = this.entidades.get(pos.getPosY());
+        Entidade e = row.get(pos.getPosX());
+        return e;
     }
 
     public ArrayList<FakeNews> getFakeNews() {
         return fakeNews;
     }
-    public void setFakeNews(ArrayList<FakeNews> fakeNews) {
+    private void setFakeNews(ArrayList<FakeNews> fakeNews) {
         this.fakeNews = fakeNews;
     }
 
     public ArrayList<Jogador> getJogadores(){
         return this.jogadores;
     }
-    public void setJogadores(ArrayList<Jogador> jogadores) {
+    private void setJogadores(ArrayList<Jogador> jogadores) {
         this.jogadores = jogadores;
     }
 
-    //done
     public int getJogadorIndex(Jogador jog) {
         for(int i = 0; i < this.jogadores.size(); i++){
             Jogador j = this.jogadores.get(i);
@@ -53,10 +66,8 @@ public class Tabuleiro {
         return this.jogadores.get(index);
     }
     public Jogador getJogador(Posicao pos){
-        ArrayList<Entidade> al = this.entidades.get(pos.getPosX());
-        Entidade e = al.get(pos.getPosY());
-
-        if(this.getEntidadeTipo(e) == 2)
+        Entidade e = this.getEntidade(pos);
+        if(this.entidadeTipo(e) == 2)
             return (Jogador) e;
         return null;
     }
@@ -64,7 +75,6 @@ public class Tabuleiro {
         return this.fakeNews.get(index);
     }
 
-    //done
     public int getJogadoresQtd(){
         return this.jogadores.size();
     }
@@ -72,22 +82,24 @@ public class Tabuleiro {
         return this.fakeNews.size();
     }
 
-    //done
+    //==========================================
+    //Metodos
+    //==========================================
+    
+    /*
+    * Inicia um jogo no tabuleiro
+    * ArrayList<Jogador> jogadores       Jogadores, min 1 max 4
+    */
     public void iniciaJogo(ArrayList<Jogador> jogadores){
         
         System.out.println("\n\nGerando tabuleiro...");        
         this.criaMapa();
-        
-
-        
-
        
         System.out.println("Adicionando áreas restritas...");        
         for(int i = 0; i < 4; i++){
             this.inicializaAreaRestrita();
         }
         
-
         System.out.println("Adicionando os itens");
         for(int i = 0; i < 2; i++){
             this.geraItens();
@@ -101,27 +113,24 @@ public class Tabuleiro {
         
     }
 
-    //done
+    /*
+    *   Executa o turno de todas as fakenews presentes no tabuleiro 
+    */
     public void turnoFakeNews() throws InterruptedException{
-        //for(FakeNews fake : this.fakeNews){
         for(int index = this.getFakeNewsQtd() -1; index >= 0 ; index--){  
-            /* Gambiarra para limpar tela */
-            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
             Posicao pos = this.getOneFakeNews(index).movimentaFakeNews();
             this.resolveMovimento(this.getOneFakeNews(index), pos);
             this.imprimeTabuleiro();
             Thread.sleep(2000);
-
         }
     }
 
-    //done
+    /*
+    * Cria uma FakeNews no tabuleiro
+    * int tipo
+    * boolean duplicada
+    * Posição posAtual 
+    */
     public FakeNews geraFakeNews(int tipo, boolean duplicada, Posicao posAtual){
         Posicao pos = new Posicao();
         if(!duplicada)
@@ -165,7 +174,9 @@ public class Tabuleiro {
         return fake;
     }
 
-    //done
+    /*
+    *   Cria um item aleatorio em uma posição vazia do tabuleiro
+    */
     public void geraItens(){
         Posicao pos = this.geraPosicaoVazia(9,0);
         Random aleatorio = Aleatorio.getAleatorio();
@@ -191,52 +202,55 @@ public class Tabuleiro {
         this.adicionaNoTabuleiro(item);
     }
 
-    //done
+    /*
+    * Deleta completamente uma entidade do tabuleiro
+    * Posição Posicao         Posição da Entidade a ser deletada 
+    */
     public void apagaEntidade(Posicao posicao){
-        int x = posicao.getPosX();
-        int y = posicao.getPosY();
+        Entidade e = this.getEntidade(posicao);
 
-        ArrayList<Entidade> al = this.entidades.get(y);
-        Entidade e = al.get(x);
-        al.set(x, null);
-        if(this.getEntidadeTipo(e) == 1){
-            FakeNews f = (FakeNews) e;
-            fakeNews.remove(f);
-        } else if(this.getEntidadeTipo(e) == 2){
-            Jogador j = (Jogador) e;
-            jogadores.remove(j);
+        /* Remove entidade e do Tabuleiro*/
+        this.removeDoTabuleiro(posicao);
+    
+        /* Remove dos arrays de FakeNews ou Jogador, se necessario */
+        if(e instanceof FakeNews){
+            fakeNews.remove((FakeNews) e);
+            return;
+        } 
+        if(e instanceof Jogador){
+            jogadores.remove((Jogador) e);
+            return;
         }
     }
 
-    
+    /*
+    *   Resolve uma tentativa de movimento de uma entidade no tabuleiro
+    *   Entidade e              Entidade que está tentando o movimento
+    *   Posição newPos          Posição que a entidade quer se mover
+    *   Retorna 1 se o movimento foi bem sucedido -1 se não foi, 0 se era uma FakeNews 
+    */    
     public int resolveMovimento(Entidade e, Posicao newPos){
-        int xAxys = newPos.getPosX();
-        int yAxys = newPos.getPosY();
-        int valorPosicao = 3;
-        if(xAxys >= 0 && yAxys >= 0){
-            valorPosicao = checaPosicao(newPos);
-        }
-        /* Jogador */
-        if(this.getEntidadeTipo(e) == 2){
+        int valorPosicao = checaPosicao(newPos);
+
+        if(e instanceof Jogador){
             Jogador j = (Jogador) e;
             String nome = j.getNome();
-
-            if(valorPosicao == 1 || valorPosicao == 3 || xAxys < 0 || yAxys < 0){
+            /* Posição invalida */
+            if(valorPosicao == 1 || valorPosicao == 3 || valorPosicao == -1){
                 System.out.println("O jogador " + nome + " se matou ao acessar uma casa que não devia");
                 this.apagaEntidade(j.getPosicao());
             } else {
-
+                /* Posição Valida */
                 this.removeDoTabuleiro(j.getPosicao());
                 j.setPosicao(newPos);
-
+                /* Posição é item */
                 if(valorPosicao == 4) {    
-                    
-                    Item i = this.pegaItem(newPos);
+                    Item i = (Item)this.getEntidade(newPos);
                     j.setItem(i);
                     this.geraItens();
                     System.out.println("O jogador " + nome + " coletou um item!");
-                } else if(valorPosicao == 2) {
-                    
+                }else if(valorPosicao == 2) {
+                    /* Posição é outro jogador*/   
                     Jogador j2 = this.getJogador(newPos);
                     String nomeJ2 = j2.getNome();
 
@@ -249,7 +263,7 @@ public class Tabuleiro {
                 
             }
         } else {
-            /* Faken */
+            /* FakeNews */
             FakeNews f = (FakeNews) e; 
             if(valorPosicao == 3 || valorPosicao == 1 || valorPosicao == -1){
                 //this.apagaEntidade(f.getPosicao());
@@ -285,127 +299,26 @@ public class Tabuleiro {
         return 0;
     }
     
-    //done
+    /*
+    * Verifica se o jogo acabou, não verifica numero de rounds
+    * Retorna true se o jogo acabou
+    */
     public boolean fimDeJogo(){
-        if(this.getFakeNewsQtd() == 0 || this.getJogadoresQtd() == 0)
-            return true;
-
-        return false;
+        return (this.getFakeNewsQtd() == 0 || this.getJogadoresQtd() == 0);
     }
 
-    //inside functions
-    //done
-    private int getEntidadeTipo(Entidade e) {
-        
-        if(e instanceof FakeNews)
-            return 1;
-        else if(e instanceof Jogador)
-            return 2;
-        else if (e instanceof AreaProibida)
-            return 3;
-        else if (e instanceof Item)
-            return 4;
-
-        return 0;
-    }
-
-    //done
-    private void criaMapa() {
-
-        ArrayList<ArrayList<Entidade>> map = new ArrayList<ArrayList<Entidade>>(9);
-        for(int i = 0; i < 9; i++){
-            ArrayList<Entidade> row = new ArrayList<Entidade>(9);
-            for(int j = 0; j < 9; j++){
-                row.add(j, null);
-            }
-            map.add(row);
-        }
-
-        this.setEntidades(map);
-    }
-
-    //done
-    private void posicionaJogadores(ArrayList<Jogador> jogadores) {
-        this.setJogadores(jogadores);
-        for (int i = 0; i < jogadores.size(); i++) {
-            this.adicionaNoTabuleiro(jogadores.get(i));
-        }
-    }
-    
-    //done
-    private void inicializaFakeNews(){
-        ArrayList<FakeNews> fakeNews = new ArrayList<FakeNews>(6);
-        
-        fakeNews.add(this.geraFakeNews(1, false, null));
-        fakeNews.add(this.geraFakeNews(1, false, null));
-
-        fakeNews.add(this.geraFakeNews(2, false, null));
-        fakeNews.add(this.geraFakeNews(2, false, null));
-
-        fakeNews.add(this.geraFakeNews(3, false, null));
-        fakeNews.add(this.geraFakeNews(3, false, null));
-        this.setFakeNews(fakeNews);
-    }
-
-    //done
-    private void inicializaAreaRestrita(){
-
-        Posicao pos = geraPosicaoVazia(9,0);
-        AreaProibida ap = new AreaProibida(pos);
-
-        this.adicionaNoTabuleiro(ap);
-    }
-
-    //done
-    private int checaPosicao(Posicao posicao){
-        if(posicao.getPosX() > 8 || posicao.getPosY()>8)
-            return -1;
-        
-        ArrayList<Entidade> row = this.entidades.get(posicao.getPosY());
-        int ocupacao = this.getEntidadeTipo(row.get(posicao.getPosX()));
-        return ocupacao;
-    }
-
-    //done
-    private Item pegaItem(Posicao pos){
-        ArrayList<Entidade> row = this.entidades.get(pos.getPosY());
-        Entidade e = row.get(pos.getPosX());
-
-        if(this.getEntidadeTipo(e) == 4)
-            return (Item) e;
-
-        return null;
-    }
-
-    //done
-    private void adicionaNoTabuleiro(Entidade e){
-        ArrayList<Entidade> row = this.entidades.get(e.getPosicao().getPosY());
-        row.set(e.getPosicao().getPosX(), e);
-    }
-
-    //done
-    private void removeDoTabuleiro(Posicao pos){
-        ArrayList<Entidade> row = this.entidades.get(pos.getPosY());
-        row.set(pos.getPosX(), null);
-    }
-    
-    //done
-    private Posicao geraPosicaoVazia(int limit, int offset){
-        Random aleatorio = Aleatorio.getAleatorio();
-        int pX;
-        int pY;
-        Posicao pos = new Posicao();
-        do{
-            pX = aleatorio.nextInt(limit) + offset;        
-            pY = aleatorio.nextInt(limit) + offset;        
-            pos.setPosX(pX);
-            pos.setPosY(pY);
-        } while(this.checaPosicao(pos) != 0);
-        return pos;
-    }
-
-    //done
+    /*
+    * Imprime o tabuleiro no terminal
+    */
     public void imprimeTabuleiro(){
+        /* Gambiarra para limpar tela */
+        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
         for(int i = 0; i < 10; i++){
             
             // imprime o divisor de linhas
@@ -422,7 +335,7 @@ public class Tabuleiro {
 
                     Entidade e = al.get(j);
                     System.out.print("| ");
-                    int tipo = this.getEntidadeTipo(e);
+                    int tipo = this.entidadeTipo(e);
                     if(tipo == 1){
                         String tipoFakeNews = e.getClass().getSimpleName().concat(" ");
                         this.imprimeEntidade(Cores.ANSI_RED, tipoFakeNews);
@@ -457,7 +370,142 @@ public class Tabuleiro {
         
     }
 
-    //done
+    //==========================================
+    //Metodos internos 
+    //==========================================    
+    
+    /*
+    * Descobre o Tipo de uma entidade
+    * Entidade e        Entidade analisada
+    * Retorna ::
+    *      Se Fakenews      retorna 1
+    *      Se Jogador       retorna 2
+    *      Se AreaProibida  retorna 3
+    *      Se Item          retorna 4
+    *      Em outro casa    retorna 0       
+    */
+    private int entidadeTipo(Entidade e) {
+        if(e instanceof FakeNews)
+            return 1;
+        if(e instanceof Jogador)
+            return 2;
+        if (e instanceof AreaProibida)
+            return 3;
+        if (e instanceof Item)
+            return 4;
+        return 0;
+    }
+
+    /*
+    * Inicia Atributo Entidades Vazio
+    */
+    private void criaMapa() {
+        ArrayList<ArrayList<Entidade>> map = new ArrayList<ArrayList<Entidade>>(9);
+        for(int i = 0; i < 9; i++){
+            ArrayList<Entidade> row = new ArrayList<Entidade>(9);
+            for(int j = 0; j < 9; j++){
+                row.add(j, null);
+            }
+            map.add(row);
+        }
+
+        this.setEntidades(map);
+    }
+
+    /*
+    * Inicia o Atributo Jogadores e Coloca os Jogadores no tabuleiro
+    */
+    private void posicionaJogadores(ArrayList<Jogador> jogadores) {
+        this.setJogadores(jogadores);
+        for (int i = 0; i < jogadores.size(); i++) {
+            this.adicionaNoTabuleiro(jogadores.get(i));
+        }
+    }
+    
+    /*
+    * Inicia o Atributo FakeNews e Coloca os FakeNews no tabuleiro
+    */
+    private void inicializaFakeNews(){
+        ArrayList<FakeNews> fakeNews = new ArrayList<FakeNews>(6);
+        
+        fakeNews.add(this.geraFakeNews(1, false, null));
+        fakeNews.add(this.geraFakeNews(1, false, null));
+
+        fakeNews.add(this.geraFakeNews(2, false, null));
+        fakeNews.add(this.geraFakeNews(2, false, null));
+
+        fakeNews.add(this.geraFakeNews(3, false, null));
+        fakeNews.add(this.geraFakeNews(3, false, null));
+        this.setFakeNews(fakeNews);
+    }
+
+    /*
+    * Coloca uma area proibida em uma posição aleatoria do tabuleiro
+    */
+    private void inicializaAreaRestrita(){
+        Posicao pos = geraPosicaoVazia(9,0);
+        AreaProibida ap = new AreaProibida(pos);
+
+        this.adicionaNoTabuleiro(ap);
+    }
+
+    /*
+    * Verifica o que está em uma posição do tabuleiro
+    * Posicao posicao            A posição a ser verificada
+    * Retorna ::
+    *      Se Vazia         retorna 0    
+    *      Se Fakenews      retorna 1
+    *      Se Jogador       retorna 2
+    *      Se AreaProibida  retorna 3
+    *      Se Item          retorna 4
+    *      Caso esteja fora do tabuleiro retorna -1    
+    */
+    private int checaPosicao(Posicao posicao){
+        if(posicao.getPosX() > 8 || posicao.getPosY()>8 ||posicao.getPosX() < 0 || posicao.getPosY() < 0 )
+            return -1;
+        int ocupacao = this.entidadeTipo(this.getEntidade(posicao));
+        return ocupacao;
+    }
+
+    /*
+    * Adiciona uma entidade no Tabuleiro, sobrescreeve a posição
+    * Entidade e              Entidade a ser adicionada
+    */
+    private void adicionaNoTabuleiro(Entidade e){
+        ArrayList<Entidade> row = this.entidades.get(e.getPosicao().getPosY());
+        row.set(e.getPosicao().getPosX(), e);
+    }
+
+    /*
+    * Esvazia uma posição do tabuleiro
+    */
+    private void removeDoTabuleiro(Posicao pos){
+        ArrayList<Entidade> row = this.entidades.get(pos.getPosY());
+        row.set(pos.getPosX(), null);
+    }
+    
+    /*
+    * Devolve uma posição vazia Aleatoria, caso não exista posição vazia entra em loop
+    */
+    private Posicao geraPosicaoVazia(int limit, int offset){
+        Random aleatorio = Aleatorio.getAleatorio();
+        int pX;
+        int pY;
+        Posicao pos = new Posicao();
+        do{
+            pX = aleatorio.nextInt(limit) + offset;        
+            pY = aleatorio.nextInt(limit) + offset;        
+            pos.setPosX(pX);
+            pos.setPosY(pY);
+        } while(this.checaPosicao(pos) != 0);
+        return pos;
+    }
+
+    /*
+    * Imprime uma entidade no terminal
+    * String cor             Strings declaradas em Cores.java
+    * String tipoEntidade    Representação em chars da entidade
+    */
     private void imprimeEntidade(String cor, String tipoEntidade){
         String clearColor = Cores.ANSI_RESET;
         System.out.print(cor+tipoEntidade+clearColor);

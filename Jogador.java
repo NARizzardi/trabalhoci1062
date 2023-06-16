@@ -41,8 +41,8 @@ public class Jogador extends Entidade{
         this.nome = nome;
     }
     /*
-    *   Movimenta o Personagem 1 casa nas direçoes cardinais
-    *   Valores de direcao (Not case sensitive): 
+    *   Encontra a posição que o Personagem esta tentando se mover, não faz movimento
+    *   Valores de direcao: 
     *       C :: Move para o Cima
     *       B :: Move para o Baixo
     *       D :: Move para o Direita
@@ -65,7 +65,7 @@ public class Jogador extends Entidade{
         return null;
     }
     /*
-    *   Tenta Movimentar o jogador em uma direção aleatoria
+    *   Encontra uma posição aleatoria para o Personagem se mover, não faz movimento
     *   Retorna a posição que o jogador está tentando se mover
     */
     public Posicao movimentoAleatorio(){

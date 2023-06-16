@@ -61,26 +61,16 @@ public class Main{
         //==========================================
         // Jogo
         //==========================================
-        for(turno = 0; (turno < 20) && !tabuleiro.fimDeJogo(); turno++){
+        for(turno = 0; (turno < 20); turno++){
             /* Vez dos jogadores */
             for(int i = tabuleiro.getJogadoresQtd()-1; i >= 0; i--){
-                /* Gambiarra para limpar tela */
-                System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-                System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-                System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-                System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-                System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-                System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-                System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
                 tabuleiro.imprimeTabuleiro();
                 atual = tabuleiro.getJogador(i);
 
                     
                 
-                /* Teste */
-                atual.setItem(new Denuncia(atual.getPosicao()));
-                /*********/
+
 
                 /* Movimento forçado :: Boato */
                 if(atual.isBoatoFlag()){
@@ -172,6 +162,13 @@ public class Main{
                     }
                 }
             }
+
+            /* Verifica Fim de jogo */
+            if(tabuleiro.fimDeJogo()){
+                tabuleiro.imprimeTabuleiro();
+                break;
+            }
+
             /* Vez das fakeNews */
             tabuleiro.turnoFakeNews();
         }
