@@ -8,16 +8,16 @@ public class Noticia extends Item{
 
     public int realizaAcao(Tabuleiro tabuleiro,Posicao posicao,Jogador jogador){
       
-        ArrayList<FakeNews> fakenews = tabuleiro.getFakeNews();
-        int posX = posicao.getPosX();
-        int posY = posicao.getPosY();
+        Random rand = Aleatorio.getAleatorio();
 
-        for(int i = 0; i < fakenews.size(); i++){
-            if(fakenews.get(i).getPosicao().getPosX() == posX && fakenews.get(i).getPosicao().getPosY() == posY){
-                tabuleiro.apagaEntidade(fakenews.get(i).getPosicao());  
-                return 1;
-            }
-        }
+        int fakeId = rand.nextInt(tabuleiro.getFakeNewsQtd());
+        tabuleiro.apagaEntidade(tabuleiro.getOneFakeNews(fakeId).posicao);
+
+        //if(fakenews.get(i).getPosicao().getPosX() == posX && fakenews.get(i).getPosicao().getPosY() == posY){
+        //    tabuleiro.apagaEntidade(fakenews.get(i).getPosicao());  
+        //    return 1;
+        //}
+        
         return 0;
 
     }

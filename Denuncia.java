@@ -1,4 +1,3 @@
-import java.util.*;
 
 public class Denuncia extends Item{
     public Denuncia(Posicao posicao){
@@ -16,7 +15,8 @@ public class Denuncia extends Item{
         for(int i = -1; i <= 1; i++){
             for(int j = -1; j <= 1; j++){
 
-                if(jogadorX + i == fakenewsX && jogadorY + j == fakenewsY) return true;
+                if(jogadorX + i == fakenewsX && jogadorY + j == fakenewsY) 
+                    return true;
                 
             }
         }
@@ -26,12 +26,9 @@ public class Denuncia extends Item{
 
     public int realizaAcao(Tabuleiro tabuleiro,Posicao posicao,Jogador jogador){
 
-        ArrayList<FakeNews> fakenews = tabuleiro.getFakeNews();
-        Posicao posicaoJogador = jogador.getPosicao();
-
-        for (FakeNews fakeNews : fakenews) {
-            if(adjacente(posicaoJogador, fakeNews.getPosicao()))
-               tabuleiro.apagaEntidade(fakeNews.getPosicao());
+        for (int index = tabuleiro.getFakeNewsQtd()-1; index >= 0; index--) {
+            if(adjacente(jogador.getPosicao(), tabuleiro.getOneFakeNews(index).posicao))
+               tabuleiro.apagaEntidade(tabuleiro.getOneFakeNews(index).posicao);
         }
 
         return 0;
