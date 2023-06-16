@@ -43,10 +43,10 @@ public class Jogador extends Entidade{
     /*
     *   Movimenta o Personagem 1 casa nas direçoes cardinais
     *   Valores de direcao (Not case sensitive): 
-    *       w :: Move para o Norte
-    *       a :: Move para o Oeste
-    *       s :: Move para o Sul
-    *       d :: Move para o Leste
+    *       C :: Move para o Cima
+    *       B :: Move para o Baixo
+    *       D :: Move para o Direita
+    *       E :: Move para o Esquerda
     *   Outro :: Erro
     *   Retorna uma posição apos o movimento ou null em caso de  erro 
     */
@@ -54,16 +54,12 @@ public class Jogador extends Entidade{
         Posicao p = this.getPosicao();
         switch (direcao){
             case 'D':
-            case 'd':
                 return new Posicao(p.getPosX()+1, p.getPosY());
-            case 'A':
-            case 'a':
+            case 'E':
                 return new Posicao(p.getPosX()-1, p.getPosY());
-            case 'W':
-            case 'w':
+            case 'C':
                 return new Posicao(p.getPosX(), p.getPosY()-1);
-            case 'S':
-            case 's':
+            case 'B':
                 return new Posicao(p.getPosX(), p.getPosY()+1);
         }
         return null;
