@@ -5,7 +5,9 @@ public class Noticia extends Item{
         super(posicao);
     }
 
-
+    /*
+    *   Deleta uma fakenews qualquer 
+    */
     public int realizaAcao(Tabuleiro tabuleiro,Posicao posicao,Jogador jogador){
       
         Random rand = Aleatorio.getAleatorio();
@@ -13,11 +15,6 @@ public class Noticia extends Item{
         int fakeId = rand.nextInt(tabuleiro.getFakeNewsQtd());
         tabuleiro.apagaEntidade(tabuleiro.getOneFakeNews(fakeId).posicao);
 
-        //if(fakenews.get(i).getPosicao().getPosX() == posX && fakenews.get(i).getPosicao().getPosY() == posY){
-        //    tabuleiro.apagaEntidade(fakenews.get(i).getPosicao());  
-        //    return 1;
-        //}
-        
         return 0;
 
     }
