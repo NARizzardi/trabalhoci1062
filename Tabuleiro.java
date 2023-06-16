@@ -6,8 +6,10 @@ public class Tabuleiro {
     private ArrayList<FakeNews> fakeNews;
     private ArrayList<Jogador> jogadores;
     
+    //construtor
     public Tabuleiro() {}
 
+    //getters e setters
     public ArrayList<ArrayList<Entidade>> getEntidades() {
         return entidades;
     }
@@ -29,57 +31,92 @@ public class Tabuleiro {
         this.jogadores = jogadores;
     }
 
+
     //done
-    public void iniciaJogo(ArrayList<Jogador> jogadores) throws InterruptedException{
+    public int getJogadorIndex(Jogador jog) {
+        for(int i = 0; i < this.jogadores.size(); i++){
+            Jogador j = this.jogadores.get(i);
+            if(jog.equals(j))
+                return i;
+        }
+        return 0;
+    }
+    public int getFakeNewsIndex(FakeNews fake) {
+        for(int i = 0; i < this.fakeNews.size(); i++){
+            FakeNews f = this.fakeNews.get(i);
+            if(fake.equals(f))
+                return i;
+        }
+        return 0;
+    }
+
+    public Jogador getJogador(int index){
+        return this.jogadores.get(index);
+    }
+    public Jogador getJogador(Posicao pos){
+        ArrayList<Entidade> al = this.entidades.get(pos.getPosX());
+        Entidade e = al.get(pos.getPosY());
+
+        if(this.getEntidadeTipo(e) == 2)
+            return (Jogador) e;
+        return null;
+    }
+    public FakeNews getOneFakeNews(int index){
+        return this.fakeNews.get(index);
+    }
+
+    //done
+    public int getJogadoresQtd(){
+        return this.jogadores.size();
+    }
+    public int getFakeNewsQtd(){
+        return this.fakeNews.size();
+    }
+
+
+    //done
+    public void iniciaJogo(ArrayList<Jogador> jogadores){
         
         this.criaMapa();
-        System.out.println("\n\nGerando tabuleiro...");
-        Thread.sleep(3000);
-        this.imprimeTabuleiro();
+        
 
         this.posicionaJogadores(jogadores);
-        System.out.println("\n\nAdicionando jogadores...");
-        Thread.sleep(3000);
-        this.imprimeTabuleiro();
+        
 
        
         
         for(int i = 0; i < 4; i++){
             this.inicializaAreaRestrita();
         }
-        System.out.println("\n\nAdicionando áreas restritas...");
-        Thread.sleep(3000);
-        this.imprimeTabuleiro();
+        
 
         for(int i = 0; i < 2; i++){
             this.geraItens();
-            System.out.println("\n\nAdicionando os itens");
-            Thread.sleep(30);
-            this.imprimeTabuleiro();
-            System.out.println("\n\n");
         }
 
         this.inicializaFakeNews();
-        System.out.println("\n\nAdicionando Fakenews...");
-        Thread.sleep(3000);
-        this.imprimeTabuleiro();
+        
         
     }
 
     //done
-    public int getFakeNewsQtd(){
-        return this.fakeNews.size();
-    }
-
-    public void turnoFakeNews(){
-        //insert code here
+    public void turnoFakeNews() throws InterruptedException{
+        for(FakeNews fake : this.fakeNews){
+            
+            System.out.print("Turno da fakenews " + this.getFakeNewsIndex(fake));
+            Thread.sleep(3000);
+            Posicao pos = fake.movimentaFakeNews();
+            this.resolveMovimento(fake, pos);
+            this.imprimeTabuleiro();
+            
+        }
     }
 
     //done
     public FakeNews geraFakeNews(int tipo, boolean duplicada, Posicao posAtual){
         Posicao pos = new Posicao();
         if(!duplicada)
-            pos = geraPosicao(7,1);
+            pos = geraPosicaoVazia(7,1);
         else{
             int posX = posAtual.getPosX();
             int posY = posAtual.getPosY();
@@ -119,11 +156,11 @@ public class Tabuleiro {
         return fake;
     }
 
+    //done
     public void geraItens(){
-        Posicao pos = this.geraPosicao(9,0);
+        Posicao pos = this.geraPosicaoVazia(9,0);
         Random aleatorio = Aleatorio.getAleatorio();
         int tipo = (aleatorio.nextInt(5) % 4);
-        System.out.println(tipo);
         Item item;
         switch(tipo){
             case 0:
@@ -150,87 +187,96 @@ public class Tabuleiro {
         int x = posicao.getPosX();
         int y = posicao.getPosY();
 
-        ArrayList<Entidade> al = this.entidades.get(x);
-        Entidade e = al.get(y);
+        ArrayList<Entidade> al = this.entidades.get(y);
+        Entidade e = al.get(x);
         al.set(y, null);
-        if(this.getEntidadeTipo(e) == 0){
+        if(this.getEntidadeTipo(e) == 1){
             FakeNews f = (FakeNews) e;
             fakeNews.remove(f);
-        } else if(this.getEntidadeTipo(e) == 1){
+        } else if(this.getEntidadeTipo(e) == 2){
             Jogador j = (Jogador) e;
             jogadores.remove(j);
         }
-
-
-
     }
 
-    //done
-    public void imprimeTabuleiro(){
-        for(int i = 0; i < 10; i++){
-            
-            // imprime o divisor de linhas
-            for(int j = 0; j < 9; j++){
-                System.out.print("+----");   
-            }
+    
+    public int resolveMovimento(Entidade e, Posicao newPos){
+        int xAxys = newPos.getPosX();
+        int yAxys = newPos.getPosY();
+        int valorPosicao = 3;
+        if(xAxys >= 0 && yAxys >= 0){
+            valorPosicao = checaPosicao(newPos);
+        }
+        if(this.getEntidadeTipo(e) == 2){
+            Jogador j = (Jogador) e;
+            String nome = j.getNome();
 
-            System.out.print("+\n");
-            
-            //imprime a linha em si
-            if(i < 9){
-                ArrayList<Entidade> al = this.entidades.get(i);
-                for(int j = 0; j < 9; j++){
+            if(valorPosicao == 1 || valorPosicao == 3 || xAxys < 0 || yAxys < 0){
+                System.out.println("O jogador " + nome + " se matou ao acessar uma casa que não devia");
+                this.apagaEntidade(j.getPosicao());
+            } else {
 
-                    Entidade e = al.get(j);
-                    System.out.print("| ");
-                    int tipo = this.getEntidadeTipo(e);
-                    if(tipo == 1){
-                        String tipoFakeNews = e.getClass().getSimpleName().concat(" ");
-                        this.imprimeEntidade(Cores.ANSI_RED, tipoFakeNews);
-                    } 
+                this.removeDoTabuleiro(j.getPosicao());
+                j.setPosicao(newPos);
 
-                    else if (tipo == 2){
-                        Jogador jog = (Jogador) e; //Downcasting para usar o metodo getNome da classe Jogador
-                        int numJogador = this.getJogador(jog)+1;
-                        String player = "J".concat(Integer.toString(numJogador)).concat(" ");
-                        this.imprimeEntidade(Cores.ANSI_CYAN, player);
-                    } 
-
-                    else if (tipo == 3){
-                        this.imprimeEntidade(Cores.ANSI_WHITE, "xx ");
-                    } 
-
-                    else if (tipo == 4){
-                        this.imprimeEntidade(Cores.ANSI_YELLOW, "?? ");
-                        
-                    } 
+                if(valorPosicao == 4) {    
                     
-                    else {
-                        System.out.print("   ");
-                    }
+                    Item i = this.pegaItem(newPos);
+                    j.setItem(i);
+                    this.geraItens();
+                    System.out.println("O jogador " + nome + " coletou um item!");
+                } else if(valorPosicao == 2) {
                     
+                    Jogador j2 = this.getJogador(newPos);
+                    String nomeJ2 = j2.getNome();
+
+                    System.out.println("O jogador " + nome + " morreu ao acessar a casa de " + nomeJ2);
+                    this.apagaEntidade(j.getPosicao());
+                    return -1; // um jogador morreu
                 }
-                System.out.print("|\n");
+                this.adicionaNoTabuleiro(j);
+                return 1; //jogador completou a ação dele
+                
             }
+        } else {
+            FakeNews f = (FakeNews) e; 
+            if(valorPosicao == 3 || valorPosicao == 1){
+                this.apagaEntidade(f.getPosicao());
+                System.out.println("A fakenews se eliminou...");
+            } else {
 
+                    this.removeDoTabuleiro(f.getPosicao());
+                    f.setPosicao(newPos);
+
+                if(valorPosicao == 2) {
+                    Jogador j = this.getJogador(newPos);
+                    String nome = j.getNome();
+                    System.out.println("A Fake News matou o jogador " + nome + ".");
+                    
+                    this.apagaEntidade(newPos);
+                } else if(valorPosicao == 4){
+                    int tipo;
+                    if(f instanceof F1){
+                        tipo = 1;
+                    }else if(f instanceof F2){
+                        tipo = 2;
+                    }else{
+                        tipo = 3;
+                    }
+                    this.geraFakeNews(tipo, true, newPos);
+                }
+                this.adicionaNoTabuleiro(e);
+            }
         }
-        
-    }
-
-    
-    public int resolveMovimento(Entidade e){
-        //insert code here
         return 0;
     }
     
     //done
-    public int getJogador(Jogador jog) {
-        for(int i = 0; i < this.jogadores.size(); i++){
-            Jogador j = this.jogadores.get(i);
-            if(jog.equals(j))
-                return i;
-        }
-        return 0;
+    public boolean fimDeJogo(){
+        if(this.getFakeNewsQtd() == 0 || this.getJogadoresQtd() == 0)
+            return true;
+
+        return false;
     }
 
     //inside functions
@@ -316,7 +362,7 @@ public class Tabuleiro {
     //done
     private void inicializaAreaRestrita(){
 
-        Posicao pos = geraPosicao(9,0);
+        Posicao pos = geraPosicaoVazia(9,0);
         AreaProibida ap = new AreaProibida(pos);
 
         this.adicionaNoTabuleiro(ap);
@@ -332,14 +378,31 @@ public class Tabuleiro {
         return ocupacao;
     }
 
-    //
+    //done
+    private Item pegaItem(Posicao pos){
+        ArrayList<Entidade> row = this.entidades.get(pos.getPosY());
+        Entidade e = row.get(pos.getPosX());
+
+        if(this.getEntidadeTipo(e) == 4)
+            return (Item) e;
+
+        return null;
+    }
+
+    //done
     private void adicionaNoTabuleiro(Entidade e){
         ArrayList<Entidade> row = this.entidades.get(e.getPosicao().getPosY());
         row.set(e.getPosicao().getPosX(), e);
     }
 
     //done
-    private Posicao geraPosicao(int limit, int offset){
+    private void removeDoTabuleiro(Posicao pos){
+        ArrayList<Entidade> row = this.entidades.get(pos.getPosY());
+        row.set(pos.getPosX(), null);
+    }
+    
+    //done
+    private Posicao geraPosicaoVazia(int limit, int offset){
         Random aleatorio = Aleatorio.getAleatorio();
         int pX;
         int pY;
@@ -353,6 +416,61 @@ public class Tabuleiro {
         return pos;
     }
 
+    //done
+    public void imprimeTabuleiro(){
+        for(int i = 0; i < 10; i++){
+            
+            // imprime o divisor de linhas
+            for(int j = 0; j < 9; j++){
+                System.out.print("+----");   
+            }
+
+            System.out.print("+\n");
+            
+            //imprime a linha em si
+            if(i < 9){
+                ArrayList<Entidade> al = this.entidades.get(i);
+                for(int j = 0; j < 9; j++){
+
+                    Entidade e = al.get(j);
+                    System.out.print("| ");
+                    int tipo = this.getEntidadeTipo(e);
+                    if(tipo == 1){
+                        String tipoFakeNews = e.getClass().getSimpleName().concat(" ");
+                        this.imprimeEntidade(Cores.ANSI_RED, tipoFakeNews);
+                    } 
+
+                    else if (tipo == 2){
+                        Jogador jog = (Jogador) e; //Downcasting para usar o metodo getNome da classe Jogador
+                        int numJogador = this.getJogadorIndex(jog)+1;
+                        String player = "J".concat(Integer.toString(numJogador)).concat(" ");
+                        this.imprimeEntidade(Cores.ANSI_CYAN, player);
+                    } 
+
+                    else if (tipo == 3){
+                        this.imprimeEntidade(Cores.ANSI_WHITE, "xx ");
+                    } 
+
+                    else if (tipo == 4){
+                        this.imprimeEntidade(Cores.ANSI_YELLOW, "?? ");
+                        
+                    } 
+                    
+                    else {
+                        System.out.print("   ");
+                    }
+                    
+                }
+                System.out.print("|\n");
+            }
+
+            
+        }
+        System.out.println("\n\n\n\n");
+        
+    }
+
+    //done
     private void imprimeEntidade(String cor, String tipoEntidade){
         String clearColor = Cores.ANSI_RESET;
         System.out.print(cor+tipoEntidade+clearColor);

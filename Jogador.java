@@ -17,6 +17,10 @@ public class Jogador extends Entidade{
         this(nome, null);
     }
 
+    public Item getItem(Item item){
+        return this.item;
+    }
+
     public void setItem(Item item){
         this.item = item;
     }
@@ -57,10 +61,10 @@ public class Jogador extends Entidade{
                 return new Posicao(p.getPosX()-1, p.getPosY());
             case 'W':
             case 'w':
-                return new Posicao(p.getPosX(), p.getPosY()+1);
+                return new Posicao(p.getPosX(), p.getPosY()-1);
             case 'S':
             case 's':
-                return new Posicao(p.getPosX(), p.getPosY()-1);
+                return new Posicao(p.getPosX(), p.getPosY()+1);
         }
         return null;
     }
