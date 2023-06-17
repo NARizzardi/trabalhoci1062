@@ -68,9 +68,6 @@ public class Main{
                 tabuleiro.imprimeTabuleiro();
                 atual = tabuleiro.getJogador(i);
 
-                    
-                /* Teste */
-                atual.setItem(new Fuga(new Posicao(0,0)));
 
                 /* Movimento forçado :: Boato */
                 if(atual.isBoatoFlag()){
