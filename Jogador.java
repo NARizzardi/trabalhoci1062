@@ -13,9 +13,6 @@ public class Jogador extends Entidade{
         this.setItem(null);
     }
 
-    public Jogador(String nome){
-        this(nome, null);
-    }
 
     public Item getItem(Item item){
         return this.item;
