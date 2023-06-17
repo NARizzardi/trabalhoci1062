@@ -316,7 +316,7 @@ public class Tabuleiro {
         System.out.println("==============================");
         System.out.println("     Uma FakeNews se foi!     ");
         System.out.println("==============================");
-        System.out.println("Mentira tem perna Curta!      ");
+        System.out.println("   Mentira tem perna Curta!   ");
         System.out.println("==============================");
     }
 
@@ -325,9 +325,9 @@ public class Tabuleiro {
     */
     public void morteJogador(Jogador j){
         System.out.println("==============================");
-        System.out.printf("         Jogador %s Morreu!    \n", j.getNome());
+        System.out.printf("      Jogador %s Morreu!      \n", j.getNome());
         System.out.println("==============================");
-        System.out.println("RIP IN PEACE                  ");
+        System.out.println("         RIP IN PEACE         ");
         System.out.println("==============================");
     }
 
@@ -335,19 +335,17 @@ public class Tabuleiro {
     * Imprime o tabuleiro no terminal
     */
     public void imprimeTabuleiro(){
-        /* Gambiarra para limpar tela */
+        this.limpaTerminal();
+        this.imprimeDivisorDeLinhas();
+        
+        this.imprimeCoordenadas();
         for(int i = 0; i < 10; i++){
+            this.imprimeDivisorDeLinhas();
             
-            // imprime o divisor de linhas
-            for(int j = 0; j < 9; j++){
-                System.out.print("+----");   
-            }
-
-            System.out.print("+\n");
-            
-            //imprime a linha em si
+            /* Imprime a linha em si */
             if(i < 9){
                 ArrayList<Entidade> al = this.entidades.get(i);
+                System.out.printf("| 0%d ", i+1); /* Imprime as coordenadas da coluna */
                 for(int j = 0; j < 9; j++){
 
                     Entidade e = al.get(j);
@@ -359,7 +357,7 @@ public class Tabuleiro {
                     } 
 
                     else if (tipo == 2){
-                        Jogador jog = (Jogador) e; //Downcasting para usar o metodo getNome da classe Jogador
+                        Jogador jog = (Jogador) e; /* Downcasting para usar o metodo getNome da classe Jogador */
                         String player = "J".concat(jog.getNome()).concat(" ");
                         this.imprimeEntidade(Cores.ANSI_CYAN, player);
                     } 
@@ -505,6 +503,8 @@ public class Tabuleiro {
     
     /*
     * Devolve uma posição vazia Aleatoria, caso não exista posição vazia entra em loop
+    * int limit              serve para definir o tamanho da área hábil para a geração
+    * int offset              utilizada para dar a distância das bordas do tabuleiro
     */
     private Posicao geraPosicaoVazia(int limit, int offset){
         Random aleatorio = Aleatorio.getAleatorio();
@@ -529,4 +529,26 @@ public class Tabuleiro {
         String clearColor = Cores.ANSI_RESET;
         System.out.print(cor+tipoEntidade+clearColor);
     }
+
+    /*
+     * Imprime o divisor de linhas 
+     */
+    private void imprimeDivisorDeLinhas() {
+        for(int j = 0; j < 10; j++){
+                System.out.print("+----");   
+            }
+
+            System.out.print("+\n");
+    }
+
+    /*
+     * Imprime as coordenadas das linhas
+     */
+    private void imprimeCoordenadas(){
+        System.out.print("|    ");
+        for(int i = 1; i < 10; i++)
+            System.out.printf("| 0%d ", i);
+        System.out.println("|");
+    }
 }
+
