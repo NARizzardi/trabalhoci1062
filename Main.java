@@ -32,7 +32,7 @@ public class Main{
         //==========================================
 
         System.out.println("==============================");
-        System.out.println("       Corra das Fake News!   ");
+        System.out.println("     Corra das Fake News!     ");
         System.out.println("==============================");
         System.out.printf("Digite o numero de jogadores: ");
 
@@ -50,7 +50,7 @@ public class Main{
         }
 
         System.out.println("==============================");
-        System.out.println("Iniciando...   ");
+        System.out.println("         Iniciando...         ");
 
         try {
             tabuleiro.iniciaJogo(jogadores); 
@@ -76,9 +76,9 @@ public class Main{
                 if(atual.isBoatoFlag()){
                     /* Mensagem de boato  */
                     System.out.println("==============================");
-                    System.out.println("           BOATO!             ");
+                    System.out.println("            BOATO!            ");
                     System.out.println("==============================");
-                    System.out.printf( "Jogador %s esta confuso!      \n",atual.getNome());
+                    System.out.printf( "   Jogador %s esta confuso!   \n",atual.getNome());
                     System.out.println("==============================");
                     Thread.sleep(2000);
                     p = atual.movimentoAleatorio();
@@ -114,40 +114,38 @@ public class Main{
                             /* Denuncia */
                             case 1:
                                 System.out.println("==============================");
-                                System.out.println("           Denuncia!          ");
+                                System.out.println("          Denuncia!           ");
                                 System.out.println("==============================");
-                                System.out.println( "É mentira!                  \n");
+                                System.out.println("          É mentira!          \n");
                                 System.out.println("==============================");
                                 break;
                             /* Noticia */
                             case 2:
                                 System.out.println("==============================");
-                                System.out.println("           Noticia!           ");
+                                System.out.println("            Noticia!          ");
                                 System.out.println("==============================");
-                                System.out.println( "Mas é verdade isso?        \n");
+                                System.out.println("      Mas é verdade isso?    \n");
                                 System.out.println("==============================");
                                 break;
                             /* Boato   */                    
                             case 3:
                                 System.out.println("==============================");
-                                System.out.println("           Boato!             ");
+                                System.out.println("            Boato!            ");
                                 System.out.println("==============================");
-                                System.out.println( "Fofocar nunca matou niguém...\n");
+                                System.out.println(" Fofocar nunca matou niguém...\n");
                                 System.out.println("==============================");
                                 break;
                             /* Fuga */
                             case 4:
                                 System.out.println("==============================");
-                                System.out.println("           Fuga!              ");
+                                System.out.println("            Fuga!             ");
                                 System.out.println("==============================");
                                 System.out.println("Me tira dessa!        \n");
                                 System.out.println("Digite uma casa [x,y] para fugir: \n");
                                 temp = scanner.nextLine();
                                 str  = temp.split(",");
-                                p.setPosX( Integer.parseInt(str[0]) );
-                                p.setPosY( Integer.parseInt(str[1]) );
-                                System.out.println(p.getPosX());
-                                System.out.println(p.getPosY());
+                                p.setPosX( Integer.parseInt(str[0]) - 1 );
+                                p.setPosY( Integer.parseInt(str[1]) - 1);
                                 System.out.println("==============================");
 
                                 break;
@@ -176,7 +174,7 @@ public class Main{
         //==========================================
         if(tabuleiro.getFakeNewsQtd() == 0){
             System.out.println("======================================");
-            System.out.println("                Vitoria!              ");
+            System.out.println("               Vitoria!               ");
             System.out.println("======================================");
             System.out.printf( "Jogadores :: %d\n",tabuleiro.getJogadores().size());
             System.out.printf( "Turnos    :: %d\n",turno);
@@ -184,7 +182,7 @@ public class Main{
         }
         else{
             System.out.println("======================================");
-            System.out.println("                Derrota!              ");
+            System.out.println("               Derrota!               ");
             System.out.println("======================================");
             System.out.printf( "Jogadores :: %d\n",tabuleiro.getJogadores().size());
             System.out.printf( "Fakenews  :: %d\n",tabuleiro.getFakeNewsQtd());
