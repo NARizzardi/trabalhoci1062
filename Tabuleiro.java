@@ -338,7 +338,6 @@ public class Tabuleiro {
     * Imprime o tabuleiro no terminal
     */
     public void imprimeTabuleiro(){
-        this.limpaTerminal();
         this.imprimeDivisorDeLinhas();
         
         this.imprimeCoordenadas();
