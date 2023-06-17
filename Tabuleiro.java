@@ -117,9 +117,15 @@ public class Tabuleiro {
     *   Executa o turno de todas as fakenews presentes no tabuleiro 
     */
     public void turnoFakeNews() throws InterruptedException{
+        FakeNews f;
+        Posicao p;
         for(int index = this.getFakeNewsQtd() -1; index >= 0 ; index--){  
-            Posicao pos = this.getOneFakeNews(index).movimentaFakeNews();
-            this.resolveMovimento(this.getOneFakeNews(index), pos);
+            f = this.getOneFakeNews(index);
+            p = f.movimentaFakeNews();
+            this.limpaTerminal();
+            if(this.resolveMovimento(f, p) == 1){
+                this.morteFakenews();
+            }
             this.imprimeTabuleiro();
             Thread.sleep(2000);
         }
@@ -171,6 +177,7 @@ public class Tabuleiro {
                 return null;
         }
         this.adicionaNoTabuleiro(fake);
+        this.getFakeNews().add(fake);
         return fake;
     }
 
@@ -227,17 +234,16 @@ public class Tabuleiro {
     *   Resolve uma tentativa de movimento de uma entidade no tabuleiro
     *   Entidade e              Entidade que está tentando o movimento
     *   Posição newPos          Posição que a entidade quer se mover
-    *   Retorna 1 se o movimento foi bem sucedido -1 se não foi, 0 se era uma FakeNews 
+    *   Retorna 1 se uma Fakenews morreu, 0 caso contrario
     */    
     public int resolveMovimento(Entidade e, Posicao newPos){
         int valorPosicao = checaPosicao(newPos);
 
         if(e instanceof Jogador){
             Jogador j = (Jogador) e;
-            String nome = j.getNome();
             /* Posição invalida */
             if(valorPosicao == 1 || valorPosicao == 3 || valorPosicao == -1){
-                System.out.println("O jogador " + nome + " se matou ao acessar uma casa que não devia");
+                morteJogador(j);                    
                 this.apagaEntidade(j.getPosicao());
             } else {
                 /* Posição Valida */
@@ -248,39 +254,29 @@ public class Tabuleiro {
                     Item i = (Item)this.getEntidade(newPos);
                     j.setItem(i);
                     this.geraItens();
-                    System.out.println("O jogador " + nome + " coletou um item!");
                 }else if(valorPosicao == 2) {
                     /* Posição é outro jogador*/   
-                    Jogador j2 = this.getJogador(newPos);
-                    String nomeJ2 = j2.getNome();
-
-                    System.out.println("O jogador " + nome + " morreu ao acessar a casa de " + nomeJ2);
+                    morteJogador(j);                    
                     this.apagaEntidade(j.getPosicao());
-                    return -1; // um jogador morreu
+                    return 0; // um jogador morreu
                 }
                 this.adicionaNoTabuleiro(j);
-                return 1; //jogador completou a ação dele
+                return 0; //jogador completou a ação dele
                 
             }
         } else {
             /* FakeNews */
             FakeNews f = (FakeNews) e; 
             if(valorPosicao == 3 || valorPosicao == 1 || valorPosicao == -1){
-                //this.apagaEntidade(f.getPosicao());
-                this.getFakeNews().remove(f);
-                this.removeDoTabuleiro(f.getPosicao());
-
-                System.out.println("A fakenews se eliminou...");
+                this.apagaEntidade(f.getPosicao());
+                return 1;
             } else {
 
                     this.removeDoTabuleiro(f.getPosicao());
                     f.setPosicao(newPos);
 
                 if(valorPosicao == 2) {
-                    Jogador j = this.getJogador(newPos);
-                    String nome = j.getNome();
-                    System.out.println("A Fake News matou o jogador " + nome + ".");
-                    
+                    morteJogador(this.getJogador(newPos));                    
                     this.apagaEntidade(newPos);
                 } else if(valorPosicao == 4){
                     int tipo;
@@ -306,19 +302,40 @@ public class Tabuleiro {
     public boolean fimDeJogo(){
         return (this.getFakeNewsQtd() == 0 || this.getJogadoresQtd() == 0);
     }
+    /*
+    * "Limpa" o terminal, é pratico pq funciona pra windows e Linux além de deixar um historico
+    */
+    public void limpaTerminal(){
+        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    }
+
+    /*
+    *   Imprime no Tabuleiro que uma fakenews morreu
+    */
+    public void morteFakenews(){
+        System.out.println("==============================");
+        System.out.println("     Uma FakeNews se foi!     ");
+        System.out.println("==============================");
+        System.out.println("Mentira tem perna Curta!      ");
+        System.out.println("==============================");
+    }
+
+    /*
+    *   Imprime no Tabuleiro que umm fakenews morreu
+    */
+    public void morteJogador(Jogador j){
+        System.out.println("==============================");
+        System.out.printf("         Jogador %s Morreu!    \n", j.getNome());
+        System.out.println("==============================");
+        System.out.println("RIP IN PEACE                  ");
+        System.out.println("==============================");
+    }
 
     /*
     * Imprime o tabuleiro no terminal
     */
     public void imprimeTabuleiro(){
         /* Gambiarra para limpar tela */
-        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
         for(int i = 0; i < 10; i++){
             
             // imprime o divisor de linhas
@@ -374,6 +391,8 @@ public class Tabuleiro {
     //Metodos internos 
     //==========================================    
     
+
+
     /*
     * Descobre o Tipo de uma entidade
     * Entidade e        Entidade analisada
@@ -427,16 +446,16 @@ public class Tabuleiro {
     */
     private void inicializaFakeNews(){
         ArrayList<FakeNews> fakeNews = new ArrayList<FakeNews>(6);
-        
-        fakeNews.add(this.geraFakeNews(1, false, null));
-        fakeNews.add(this.geraFakeNews(1, false, null));
-
-        fakeNews.add(this.geraFakeNews(2, false, null));
-        fakeNews.add(this.geraFakeNews(2, false, null));
-
-        fakeNews.add(this.geraFakeNews(3, false, null));
-        fakeNews.add(this.geraFakeNews(3, false, null));
         this.setFakeNews(fakeNews);
+        
+        this.geraFakeNews(1, false, null);
+        this.geraFakeNews(1, false, null);
+
+        this.geraFakeNews(2, false, null);
+        this.geraFakeNews(2, false, null);
+
+        this.geraFakeNews(3, false, null);
+        this.geraFakeNews(3, false, null);
     }
 
     /*

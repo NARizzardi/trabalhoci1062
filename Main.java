@@ -14,10 +14,10 @@ public class Main{
         int num_jogadores;
         ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
         Posicao iniciais[] = new Posicao[4];
-        iniciais[0] = new Posicao(4, 0); 
-        iniciais[1] = new Posicao(8, 4); 
-        iniciais[2] = new Posicao(4, 8); 
-        iniciais[3] = new Posicao(0, 4);
+        iniciais[3] = new Posicao(4, 0); 
+        iniciais[2] = new Posicao(8, 4); 
+        iniciais[1] = new Posicao(4, 8); 
+        iniciais[0] = new Posicao(0, 4);
         /* Tabuleiro */
         Tabuleiro tabuleiro = new Tabuleiro();
 
@@ -64,13 +64,13 @@ public class Main{
         for(turno = 0; (turno < 20); turno++){
             /* Vez dos jogadores */
             for(int i = tabuleiro.getJogadoresQtd()-1; i >= 0; i--){
-
+                tabuleiro.limpaTerminal();
                 tabuleiro.imprimeTabuleiro();
                 atual = tabuleiro.getJogador(i);
 
                     
-                
-
+                /* Teste */
+                atual.setItem(new Fuga(new Posicao(0,0)));
 
                 /* Movimento forçado :: Boato */
                 if(atual.isBoatoFlag()){
@@ -89,21 +89,21 @@ public class Main{
                     /* Processa Input */
                     System.out.println("==============================");
                     System.out.printf("Jogador :: %s\n",atual.getNome());
-                    System.out.println("Digite [CIMA] [BAIXO] [DIREITA] [ESQUERDA] para se mover");
+                    System.out.println("Digite [C]IMA [B]AIXO [D]IREITA [E]SQUERDA para se mover");
                     if(atual.ChecarItem() != 0)
-                        System.out.println("Digite  [ITEM] para usar seu item");
+                        System.out.println("Digite  [I]TEM para usar seu item");
                     System.out.println("==============================");
 
                     input = scanner.nextLine();
                     input = input.toUpperCase();
-                    while(((atual.ChecarItem() == 0 && input.equals("ITEM")) || !(input.equals("ITEM")) && !input.equals("CIMA")&&!input.equals("BAIXO")&&!input.equals("DIREITA")&&!input.equals("ESQUERDA"))){
+                    while(((atual.ChecarItem() == 0 && input.equals("I")) || !(input.equals("I")) && !input.equals("C")&&!input.equals("B")&&!input.equals("D")&&!input.equals("E"))){
                         System.out.println("Tente novamente");
                         input = scanner.nextLine();
                         input = input.toUpperCase();
                     }
 
                     /* Movimento */
-                    if(!input.equals("ITEM")){
+                    if(!input.equals("I")){
                         p = atual.movimentoBase(input.charAt(0));
                         tabuleiro.resolveMovimento(atual,p);
                     }    
@@ -118,7 +118,6 @@ public class Main{
                                 System.out.println("==============================");
                                 System.out.println( "É mentira!                  \n");
                                 System.out.println("==============================");
-                                Thread.sleep(2000);
                                 break;
                             /* Noticia */
                             case 2:
@@ -127,13 +126,6 @@ public class Main{
                                 System.out.println("==============================");
                                 System.out.println( "Mas é verdade isso?        \n");
                                 System.out.println("==============================");
-                                Thread.sleep(2000);
-
-                                //System.out.println( "Digite uma casa [x,y] para investigar: \n");
-                                //temp = scanner.nextLine();
-                                //str  = temp.split(",");
-                                //p.setPosX( Integer.parseInt(str[0]) );
-                                //p.setPosY( Integer.parseInt(str[1]) );
                                 break;
                             /* Boato   */                    
                             case 3:
@@ -142,7 +134,6 @@ public class Main{
                                 System.out.println("==============================");
                                 System.out.println( "Fofocar nunca matou niguém...\n");
                                 System.out.println("==============================");
-                                Thread.sleep(2000);
                                 break;
                             /* Fuga */
                             case 4:
@@ -155,16 +146,22 @@ public class Main{
                                 str  = temp.split(",");
                                 p.setPosX( Integer.parseInt(str[0]) );
                                 p.setPosY( Integer.parseInt(str[1]) );
+                                System.out.println(p.getPosX());
+                                System.out.println(p.getPosY());
+                                System.out.println("==============================");
+
                                 break;
                         }
 
                         atual.utilizarItem(tabuleiro,p);
                     }
                 }
+                Thread.sleep(2000);
             }
 
             /* Verifica Fim de jogo */
             if(tabuleiro.fimDeJogo()){
+                tabuleiro.limpaTerminal();
                 tabuleiro.imprimeTabuleiro();
                 break;
             }
