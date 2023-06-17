@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Noticia extends Item{
     public Noticia(Posicao posicao){
-        super(posicao);
+        this.setPosicao(posicao);
     }
 
     /*
@@ -14,7 +14,6 @@ public class Noticia extends Item{
 
         int fakeId = rand.nextInt(tabuleiro.getFakeNewsQtd());
         tabuleiro.apagaEntidade(tabuleiro.getOneFakeNews(fakeId).posicao);
-
         return 0;
 
     }

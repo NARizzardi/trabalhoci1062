@@ -7,7 +7,7 @@ public class Jogador extends Entidade{
 
     
     public Jogador(String nome, Posicao posicao) {
-        super(posicao);
+        this.setPosicao(posicao);
         this.setNome(nome);
         this.setBoatoFlag(false);
         this.setItem(null);

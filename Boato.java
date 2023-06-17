@@ -1,6 +1,6 @@
 public class Boato extends Item{
     public Boato(Posicao posicao){
-        super(posicao);
+        this.setPosicao(posicao);
     }
     /*
     *   Força o jogador a fazwer um movimento aleatorio no proximo turno 

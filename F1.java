@@ -3,7 +3,7 @@ import java.util.Random;
 public class F1 extends FakeNews{
 
     public F1(Posicao posicao){
-        super(posicao);
+        this.setPosicao(posicao);
     }
     
     /*
