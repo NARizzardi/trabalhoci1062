@@ -4,7 +4,7 @@ public class Denuncia extends Item{
         this.setPosicao(posicao);
     }
 
-    public boolean adjacente(Posicao jogador, Posicao fakenews){
+    private boolean adjacente(Posicao jogador, Posicao fakenews){
     
         int jogadorX = jogador.getPosX();
         int jogadorY = jogador.getPosY();
