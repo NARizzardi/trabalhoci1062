@@ -95,6 +95,9 @@ public class Tabuleiro {
         System.out.println("\n\nGerando tabuleiro...");        
         this.criaMapa();
        
+        System.out.println("Adicionando jogadores...");
+        this.posicionaJogadores(jogadores);
+
         System.out.println("Adicionando áreas restritas...");        
         for(int i = 0; i < 4; i++){
             this.inicializaAreaRestrita();
@@ -107,9 +110,6 @@ public class Tabuleiro {
 
         System.out.println("Adicionando Fakenews...");
         this.inicializaFakeNews();
-        
-        System.out.println("Adicionando jogadores...");
-        this.posicionaJogadores(jogadores);
         
     }
 
