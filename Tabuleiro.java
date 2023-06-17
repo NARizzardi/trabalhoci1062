@@ -246,9 +246,12 @@ public class Tabuleiro {
                 morteJogador(j);                    
                 this.apagaEntidade(j.getPosicao());
             } else {
+                /* Teleportou para a mesma posição */
+                if(newPos.getPosX() == j.getPosicao().getPosX() && newPos.getPosY() == j.getPosicao().getPosY())
+                    return 0;
                 /* Posição Valida */
                 this.removeDoTabuleiro(j.getPosicao());
-                j.setPosicao(newPos);
+                j.mudaPosicao(newPos);
                 /* Posição é item */
                 if(valorPosicao == 4) {    
                     Item i = (Item)this.getEntidade(newPos);
@@ -273,7 +276,7 @@ public class Tabuleiro {
             } else {
 
                     this.removeDoTabuleiro(f.getPosicao());
-                    f.setPosicao(newPos);
+                    f.mudaPosicao(newPos);
 
                 if(valorPosicao == 2) {
                     morteJogador(this.getJogador(newPos));                    
