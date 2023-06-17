@@ -8,4 +8,9 @@ public abstract class Entidade {
     public void setPosicao(Posicao posicao) {
         this.posicao = posicao;
     }
+
+    public void mudaPosicao(Posicao posicao){
+        this.posicao.setPosX(posicao.getPosX());
+        this.posicao.setPosY(posicao.getPosY());
+    }
 }
